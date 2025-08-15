@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'problems',
     'submissions',
     'contests',
+    'discussions',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
