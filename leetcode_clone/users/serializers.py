@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import CustomUser, CodeDraft
 
 class UserSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.ImageField(max_length=None, use_url=True)
+    
     class Meta:
         model = CustomUser
         fields = ['id', 'username', 'email', 'password', 'profile_picture', 'linkedin_url', 'github_url', 'website_url']
