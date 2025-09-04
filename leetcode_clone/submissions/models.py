@@ -1,8 +1,6 @@
-# submissions/models.py
 from django.db import models
 from django.conf import settings
 
-# It's good practice to import from your other apps like this
 from problems.models import Problem 
 
 class Submission(models.Model):
@@ -20,7 +18,6 @@ class Submission(models.Model):
     code = models.TextField()
     language = models.CharField(max_length=50)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
-    # This field can store the output or any error message
     output = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

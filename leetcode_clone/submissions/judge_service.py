@@ -1,13 +1,11 @@
-# submissions/judge_service.py
 import os
 import requests
 from django.conf import settings
 
-# A mapping from our app's language choices to Judge0's language IDs
 LANGUAGE_ID_MAP = {
     'python': 71,
     'javascript': 63,
-    'cpp': 54,  # For C++
+    'cpp': 54,  
 }
 
 def execute_code(code, language, problem):
@@ -26,7 +24,6 @@ def execute_code(code, language, problem):
         "content-type": "application/json",
     }
     
-    # Run against all test cases for the problem
     for test_case in problem.test_cases.all():
         payload = {
             "language_id": language_id,
@@ -37,12 +34,17 @@ def execute_code(code, language, problem):
         
         try:
             response = requests.post(api_url, json=payload, headers=headers, params={"base64_encoded": "false", "wait": "true"})
-            response.raise_for_status() # Raise an exception for bad status codes
+            response.raise_for_status()
             
             result = response.json()
             status_description = result.get('status', {}).get('description')
             
-            # If any test case fails, stop and return the result immediately
+            if status_description == 'Compilation Error':
+                return {
+                    'status': 'Compilation Error',
+                    'output': result.get('compile_output')
+                }
+            
             if status_description != 'Accepted':
                 return {
                     'status': status_description, 
@@ -51,5 +53,4 @@ def execute_code(code, language, problem):
         except requests.exceptions.RequestException as e:
             return {'status': 'API Error', 'output': str(e)}
 
-    # If all test cases passed
     return {'status': 'Accepted', 'output': 'All test cases passed!'}

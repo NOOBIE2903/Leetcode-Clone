@@ -33,7 +33,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Application definition
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -43,11 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Third-party apps
     'rest_framework',
     'rest_framework_simplejwt',
+    'corsheaders',
 
-    # Local apps
     'users',
     'problems',
     'submissions',
@@ -58,6 +57,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -142,11 +142,39 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+        'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+    ],
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60), # Set to 1 hour for development
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60), 
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    # This will allow for a 30-second clock difference
     "LEEWAY": timedelta(seconds=30), 
+}
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173", 
+]
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    'finalize-ended-contests-every-hour': {
+        'task': 'contests.tasks.finalize_ended_contests',
+        'schedule': crontab(minute=0, hour='*'),
+    },
 }

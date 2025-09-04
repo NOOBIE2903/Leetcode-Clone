@@ -1,4 +1,3 @@
-# discussions/models.py
 from django.db import models
 from django.conf import settings
 from problems.models import Problem
@@ -8,7 +7,6 @@ class Comment(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    # This allows for nested comments/replies
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
 
     class Meta:

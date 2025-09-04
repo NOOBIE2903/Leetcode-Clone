@@ -1,4 +1,3 @@
-# discussions/views.py
 from rest_framework import generics, permissions
 from .models import Comment
 from .serializers import CommentSerializer
@@ -9,12 +8,16 @@ class CommentListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        # Filter comments by the problem ID in the URL
         problem_id = self.kwargs['problem_pk']
-        return Comment.objects.filter(problem_id=problem_id)
+        return Comment.objects.filter(
+            problem_id=problem_id, 
+            parent__isnull=True
+        ).prefetch_related('replies')
 
     def perform_create(self, serializer):
-        problem_id = self.kwargs['problem_pk']
-        problem = Problem.objects.get(id=problem_id)
-        # Associate comment with the problem and logged-in user
+        """
+        This method correctly associates the new comment with the
+        problem and the logged-in user.
+        """
+        problem = Problem.objects.get(pk=self.kwargs['problem_pk'])
         serializer.save(author=self.request.user, problem=problem)
