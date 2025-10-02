@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams, useNavigate} from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import apiClient from "../services/app";
 import AuthContext from "./context/AuthContext";
 import Comment from "./Comment";
 import CountdownTimer from "./CountdownTimer";
+import Latex from "react-latex";
 
 const languageBoilerplate = {
   cpp: `#include <iostream>
@@ -129,8 +130,8 @@ function ProblemDetailPage() {
         code: code,
       });
       setSubmissionResult(response.data);
-      if (response.data.status === 'Accepted') {
-        setProblem(prevProblem => ({ ...prevProblem, isSolved: true }));
+      if (response.data.status === "Accepted") {
+        setProblem((prevProblem) => ({ ...prevProblem, isSolved: true }));
         alert("Congratulations! Problem solved correctly.");
         // navigate('/');
       }
@@ -198,7 +199,8 @@ function ProblemDetailPage() {
   if (!problem) return null;
 
   console.log(problem);
-  
+  console.log(submissionResult);
+
   return (
     <div className="flex flex-col md:flex-row h-screen bg-gray-900 text-white font-sans">
       {/* Left Panel */}
@@ -278,10 +280,14 @@ function ProblemDetailPage() {
         <h2 className="text-xl font-semibold mt-6 mb-2">Constraints</h2>
         <div
           className="prose prose-invert max-w-none text-gray-300 mb-6"
-          dangerouslySetInnerHTML={{
-            __html: problem.constraints?.replace(/\n/g, "<br/>") ?? "",
-          }}
-        />
+          // dangerouslySetInnerHTML={{
+          //   __html: problem.constraints?.replace(/\n/g, "<br/>") ?? "",
+          // }}
+        >
+          <Latex>{`$${
+            problem.constraints?.replace(/\n/g, "<br/>") ?? ""
+          }$`}</Latex>
+        </div>
 
         <h2 className="text-xl font-semibold mt-6 mb-2">Examples</h2>
         <div className="space-y-4">
@@ -312,58 +318,72 @@ function ProblemDetailPage() {
         {/* Discussion Section */}
         <div className="mt-8 pt-6 border-t border-gray-700">
           <h2 className="text-2xl font-bold mb-4">Discussion</h2>
-          <form onSubmit={(e) => handleCommentSubmit(e)} className="mb-6">
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Add a comment..."
-              className="w-full p-2 bg-gray-700 rounded-md border border-gray-600 focus:ring-2 focus:ring-blue-500"
-              rows="3"
-            ></textarea>
-            <button
-              type="submit"
-              className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
-            >
-              Post Comment
-            </button>
-          </form>
-          <div className="space-y-4">
-            {comments.map((comment) => (
-              <div key={comment.id}>
-                <Comment comment={comment} onReply={setReplyingTo} isTopLevel={true} />
-                {replyingTo === comment.id && (
-                  <form
-                    onSubmit={(e) => handleCommentSubmit(e, comment.id)}
-                    className="mt-2 ml-12"
-                  >
-                    <textarea
-                      value={newComment}
-                      onChange={(e) => setNewComment(e.target.value)}
-                      placeholder={`Replying to ${comment.author}...`}
-                      className="w-full p-2 bg-gray-700 rounded-md border border-gray-600"
-                      rows="2"
-                      autoFocus
-                    ></textarea>
-                    <div className="flex space-x-2 mt-2">
-                      <button
-                        type="submit"
-                        className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-1 px-3 rounded-md"
+          {problem.isInActiveContest ? (
+            // If yes, show the locked message
+            <div className="bg-gray-800 p-6 rounded-lg text-center text-gray-400">
+              <p>Discussions are locked for the duration of the contest.</p>
+            </div>
+          ) : (
+            // If no, show the regular comment form and list
+            <>
+              <form onSubmit={(e) => handleCommentSubmit(e)} className="mb-6">
+                <textarea
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Add a comment..."
+                  className="w-full p-2 bg-gray-700 rounded-md border border-gray-600 focus:ring-2 focus:ring-blue-500"
+                  rows="3"
+                ></textarea>
+                <button
+                  type="submit"
+                  className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
+                >
+                  Post Comment
+                </button>
+              </form>
+              <div className="space-y-4">
+                {comments.map((comment) => (
+                  <div key={comment.id}>
+                    <Comment
+                      comment={comment}
+                      onReply={setReplyingTo}
+                      isTopLevel={true}
+                    />
+                    {replyingTo === comment.id && (
+                      <form
+                        onSubmit={(e) => handleCommentSubmit(e, comment.id)}
+                        className="mt-2 ml-12"
                       >
-                        Submit Reply
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setReplyingTo(null)}
-                        className="bg-gray-600 hover:bg-gray-500 text-white text-sm font-bold py-1 px-3 rounded-md"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                )}
+                        <textarea
+                          value={newComment}
+                          onChange={(e) => setNewComment(e.target.value)}
+                          placeholder={`Replying to ${comment.author}...`}
+                          className="w-full p-2 bg-gray-700 rounded-md border border-gray-600"
+                          rows="2"
+                          autoFocus
+                        ></textarea>
+                        <div className="flex space-x-2 mt-2">
+                          <button
+                            type="submit"
+                            className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-1 px-3 rounded-md"
+                          >
+                            Submit Reply
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setReplyingTo(null)}
+                            className="bg-gray-600 hover:bg-gray-500 text-white text-sm font-bold py-1 px-3 rounded-md"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </form>
+                    )}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -413,8 +433,6 @@ function ProblemDetailPage() {
                 className={
                   submissionResult.status === "Accepted"
                     ? "text-green-400"
-                    : submissionResult.status === "Compilation Error"
-                    ? "text-yellow-400"
                     : "text-red-400"
                 }
               >
@@ -422,9 +440,37 @@ function ProblemDetailPage() {
                 {submissionResult.status}
               </span>
             </h3>
-            <pre className="bg-gray-900 p-3 rounded-md text-sm whitespace-pre-wrap font-mono">
-              <code>{submissionResult.output || "No output."}</code>
-            </pre>
+
+            {/* If the answer is wrong, show the test case details */}
+            {submissionResult.status === "Wrong Answer" && (
+              <div className="font-mono text-sm space-y-2 mt-2">
+                <div>
+                  <p className="text-gray-400">Input:</p>
+                  <pre className="bg-gray-900 p-2 rounded whitespace-pre-wrap">
+                    <code>{submissionResult.failingInput}</code>
+                  </pre>
+                </div>
+                <div>
+                  <p className="text-gray-400">Your Output:</p>
+                  <pre className="bg-gray-900 p-2 rounded whitespace-pre-wrap">
+                    <code>{submissionResult.output}</code>
+                  </pre>
+                </div>
+                <div>
+                  <p className="text-gray-400">Expected Output:</p>
+                  <pre className="bg-gray-900 p-2 rounded whitespace-pre-wrap">
+                    <code>{submissionResult.expectedOutput}</code>
+                  </pre>
+                </div>
+              </div>
+            )}
+
+            {/* For other statuses, show the standard output */}
+            {submissionResult.status !== "Wrong Answer" && (
+              <pre className="bg-gray-900 p-3 rounded-md text-sm whitespace-pre-wrap font-mono">
+                <code>{submissionResult.output || "No output."}</code>
+              </pre>
+            )}
           </div>
         )}
       </div>

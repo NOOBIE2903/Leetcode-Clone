@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import serializers
 from .models import Problem, TestCase, Tag
 
@@ -29,10 +30,11 @@ class ProblemDetailSerializer(serializers.ModelSerializer):
     test_cases = TestCaseSerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     is_solved = serializers.SerializerMethodField()
+    is_in_active_contest = serializers.SerializerMethodField()
 
     class Meta:
         model = Problem
-        fields = ['id', 'title', 'description', 'input_format', 'output_format', 'constraints', 'difficulty', 'tags', 'test_cases', 'is_solved']
+        fields = ['id', 'title', 'description', 'input_format', 'output_format', 'constraints', 'difficulty', 'tags', 'test_cases', 'is_solved', 'is_in_active_contest']
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -44,6 +46,13 @@ class ProblemDetailSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         if user.is_authenticated:
             return obj.solved_by.filter(pk=user.pk).exists()
+        return False
+    
+    def get_is_in_active_contest(self, obj):
+        if obj.contest:
+            now = timezone.now()
+            if obj.contest.start_time <= now <= obj.contest.end_time:
+                return True
         return False
     
 class ProblemCreateSerializer(serializers.ModelSerializer):

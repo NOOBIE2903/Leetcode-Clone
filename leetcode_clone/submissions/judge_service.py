@@ -29,7 +29,8 @@ def execute_code(code, language, problem):
             "language_id": language_id,
             "source_code": code,
             "stdin": test_case.input_data,
-            "expected_output": test_case.expected_output
+            "expected_output": test_case.expected_output,
+            "cpu_time_limit": problem.time_limit,
         }
         
         try:
@@ -48,7 +49,9 @@ def execute_code(code, language, problem):
             if status_description != 'Accepted':
                 return {
                     'status': status_description, 
-                    'output': result.get('stdout') or result.get('stderr')
+                    'output': result.get('stdout') or result.get('stderr'),
+                    'failingInput': test_case.input_data,
+                    'expectedOutput': test_case.expected_output
                 }
         except requests.exceptions.RequestException as e:
             return {'status': 'API Error', 'output': str(e)}

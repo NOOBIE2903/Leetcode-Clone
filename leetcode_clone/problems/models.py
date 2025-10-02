@@ -22,6 +22,7 @@ class Problem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag, blank=True)
     contest = models.ForeignKey('contests.Contest', on_delete=models.CASCADE, related_name='problems', null=True, blank=True)
+    time_limit = models.FloatField(default=1.0, help_text="Time limit in seconds for a solution to run.")
     points = models.IntegerField(default=100, help_text="Points awarded for solving this problem in a contest")
     input_format = models.TextField(blank=True, null=True, help_text="Description of the input format.")
     output_format = models.TextField(blank=True, null=True, help_text="Description of the output format.")

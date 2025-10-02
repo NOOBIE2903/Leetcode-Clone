@@ -29,6 +29,7 @@ function ContestCreatePage() {
             output_format: "",
             difficulty: "Easy",
             points: 100,
+            time_limit: 1.0,
             testCases: [
               { input_data: "", expected_output: "", is_hidden: false },
             ],
@@ -77,6 +78,7 @@ function ContestCreatePage() {
         output_format: "",
         difficulty: "Easy",
         points: 100,
+        time_limit: 1.0,
         testCases: [{ input_data: "", expected_output: "", is_hidden: false }],
       },
     ]);
@@ -312,6 +314,16 @@ function ContestCreatePage() {
                   onChange={(e) => handleProblemChange(problemIndex, e)}
                   placeholder="Points"
                   required
+                  className="w-full p-2 bg-gray-700 rounded-md border border-gray-600"
+                />
+                <input 
+                  type="number" 
+                  name="time_limit" 
+                  value={problem.time_limit} 
+                  onChange={(e) => handleProblemChange(problemIndex, e)} 
+                  placeholder="Time Limit (s)" 
+                  step="0.1"
+                  required 
                   className="w-full p-2 bg-gray-700 rounded-md border border-gray-600"
                 />
               </div>
