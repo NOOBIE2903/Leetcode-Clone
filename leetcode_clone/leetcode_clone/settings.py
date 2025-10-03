@@ -37,7 +37,7 @@ RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
     
-ALLOWED_HOSTS.append('https://leetcode-clone-frontend.onrender.com/') 
+ALLOWED_HOSTS.append('leetcode-clone-frontend.onrender.com') 
 
 
 
@@ -186,7 +186,7 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", 
-    "https://leetcode-clone-frontend.onrender.com/", 
+    "https://leetcode-clone-frontend.onrender.com", 
 ]
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
