@@ -35,8 +35,8 @@ services:
     routes:
       # FIX: Correct the source and destination paths
       - type: rewrite
-        source: /api/:path*
-        destination: https://leetcode-clone-backend-xkde.onrender.com/api/:path*
+        source: /api/(.*)
+        destination: https://leetcode-clone-backend-xkde.onrender.com/api/$1
       # This rule must come last to act as a fallback
       - type: rewrite
         source: /*
