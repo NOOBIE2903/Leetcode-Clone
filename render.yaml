@@ -5,7 +5,7 @@ databases:
     user: leetcode_clone_user
 
 services:
-  # --- Backend Service (Correct) ---
+  # --- Backend Service ---
   - type: web
     name: leetcode-clone-backend
     plan: free
@@ -25,18 +25,16 @@ services:
       - key: PYTHON_VERSION
         value: 3.11.5
 
-  # --- Frontend Service (Corrected) ---
-  - type: static_site # FIX: Change 'static' to 'static_site'
+  # --- Frontend Service ---
+  - type: static_site
     name: leetcode-clone-frontend
     rootDir: leetcode-clone-frontend
     buildCommand: "npm install && npm run build"
     publishDir: "dist"
-    # Add rewrite rules to proxy API requests
     routes:
       - type: rewrite
         source: /api/:path*
         destination: https://leetcode-clone-backend.onrender.com/api/:path*
-      # This rule ensures all other paths are handled by your React app
       - type: rewrite
         source: /*
         destination: /index.html
