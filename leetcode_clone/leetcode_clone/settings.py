@@ -59,6 +59,9 @@ INSTALLED_APPS = [
     'submissions',
     'contests',
     'discussions',
+    
+    'cloudinary',
+    'cloudinary_storage',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -110,6 +113,8 @@ DATABASES = {
     )
 }
 
+CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
