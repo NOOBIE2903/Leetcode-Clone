@@ -2,7 +2,12 @@ from django.utils import timezone
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from .models import Contest, ContestParticipant
-from .serializers import ContestListSerializer, ContestDetailSerializer, ContestCreateSerializer, ContestParticipantSerializer
+from .serializers import (
+    ContestListSerializer, 
+    ContestDetailSerializer, 
+    ContestCreateSerializer, 
+    ContestParticipantSerializer
+)
 
 class ContestListView(generics.ListAPIView):
     queryset = Contest.objects.all().order_by('-start_time')

@@ -31,6 +31,7 @@ services:
     rootDir: leetcode-clone-frontend
     buildCommand: "npm install && npm run build"
     publishDir: "dist"
+<<<<<<< HEAD
     # Add rewrite rules to proxy API requests
     routes:
       - type: rewrite
@@ -40,3 +41,9 @@ services:
       - type: rewrite
         source: /*
         destination: /index.html
+=======
+    envVars:
+      - key: VITE_API_URL
+        value: "https://leetcode-clone-backend-xkde.onrender.com"
+>>>>>>> 4424c3fd46197963f02870cab30b62b54e6a0419
+
