@@ -6,9 +6,10 @@ databases:
 
 services:
   - type: web
-    name: leetcode-clone
+    name: leetcode-clone-backend
     plan: free
     runtime: python
+    rootDir: leetcode_clone  # <--- This is the crucial line
     buildCommand: "./build.sh"
     startCommand: "gunicorn leetcode_clone.asgi:application -k uvicorn.workers.UvicornWorker"
     envVars:
@@ -21,4 +22,4 @@ services:
       - key: WEB_CONCURRENCY
         value: 4
       - key: PYTHON_VERSION
-        value: 3.11.4 # Or your specific Python version
+        value: 3.11.4
