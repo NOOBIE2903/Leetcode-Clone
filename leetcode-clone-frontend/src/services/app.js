@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+// Get the API URL from environment variables
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const apiClient = axios.create({
-  baseURL: 'http://127.0.0.1:8000', // Assuming no /api/ prefix as you mentioned
+  baseURL: apiUrl, // Use the environment variable here
   headers: {
     'Content-Type': 'application/json',
   },
@@ -14,7 +17,6 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
-    
     return config;
   },
   (error) => {
@@ -22,14 +24,15 @@ apiClient.interceptors.request.use(
   }
 );
 
+// Interceptor to handle responses and token expiration
 apiClient.interceptors.response.use(
-  (response) => response, // Simply return the response if it's successful
+  (response) => response,
   (error) => {
     const originalRequest = error.config;
 
-    // Check if the error is a 401 Unauthorized and it's not a retry request
-    if (error.response.status === 401 && !originalRequest._retry) {
-      // The "token_not_valid" code is sent by DRF Simple JWT on token expiration
+    // Check for 401 Unauthorized error
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      // Check for the specific error code from Simple JWT
       if (error.response.data.code === 'token_not_valid') {
         console.log('Access token expired. Logging out.');
         
@@ -38,7 +41,6 @@ apiClient.interceptors.response.use(
         localStorage.removeItem('refreshToken');
         
         // Redirect to the login page
-        // We use window.location instead of useNavigate because this is outside a React component
         window.location.href = '/login';
         
         return Promise.reject(error);

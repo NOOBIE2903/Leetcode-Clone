@@ -23,3 +23,13 @@ services:
         value: 4
       - key: PYTHON_VERSION
         value: 3.11.4
+
+
+  - type: static site 
+    name: leetcode-clone-frontend
+    rootDir: leetcode-clone-frontend
+    buildCommand: "npm install && npm run build"
+    publishDir: "dist"
+    envVars:
+      - key: VITE_API_URL # Or REACT_APP_API_URL for Create React App
+        value: "https://leetcode-clone-backend-xkde.onrender.com"
