@@ -186,6 +186,7 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", 
+    "https://leetcode-clone-frontend.onrender.com/", 
 ]
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
