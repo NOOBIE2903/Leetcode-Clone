@@ -5,13 +5,14 @@ databases:
     user: leetcode_clone_user
 
 services:
+  # --- Backend Service (Correct) ---
   - type: web
     name: leetcode-clone-backend
     plan: free
     runtime: python
     rootDir: leetcode_clone
     buildCommand: "./build.sh"
-    startCommand: "gunicorn leetcode_clone.asgi:application -k uvicorn.workers.UvicornWorker"
+    startCommand: "gunicorn leetcode_clone.wsgi:application"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -22,32 +23,20 @@ services:
       - key: WEB_CONCURRENCY
         value: 4
       - key: PYTHON_VERSION
-        value: 3.11.4
+        value: 3.11.5
 
-  - type: static
+  # --- Frontend Service (Corrected) ---
+  - type: static_site # FIX: Change 'static' to 'static_site'
     name: leetcode-clone-frontend
     rootDir: leetcode-clone-frontend
     buildCommand: "npm install && npm run build"
     publishDir: "dist"
-    envVars:
-      - key: VITE_API_URL
-        value: "https://leetcode-clone-backend-xkde.onrender.com"
-      - key: VITE_JUDGE0_RAPIDAPI_KEY
-        value: "6b0036be7amsh3c8c8b9f0398545p190784jsncce249ecdf3d" 
-      - key: VITE_JUDGE0_RAPIDAPI_HOST
-        value: "judge0-ce.p.rapidapi.com"
-      - key: VITE_JUDGE0_BASE_URL
-        value: "https://judge0-ce.p.rapidapi.com"
-      - key: VITE_JUDGE0_SUBMISSION_URL
-        value: "https://judge0-ce.p.rapidapi.com/submissions"
-      - key: VITE_JUDGE0_LANGUAGES_URL
-        value: "https://judge0-ce.p.rapidapi.com/languages"
-      - key: VITE_JUDGE0_STATUSES_URL 
-        value: "https://judge0-ce.p.rapidapi.com/submissions/"
-      - key: VITE_JUDGE0_BATCH_SUBMISSION_URL 
-        value: "https://judge0-ce.p.rapidapi.com/submissions/batch"
-      - key: VITE_JUDGE0_BATCH_STATUSES_URL 
-        value: "https://judge0-ce.p.rapidapi.com/submissions/batch/"
-      - key: VITE_JUDGE0_RAPIDAPI_URL 
-        value: "https://judge0-ce.p.rapidapi.com"
-        
+    # Add rewrite rules to proxy API requests
+    routes:
+      - type: rewrite
+        source: /api/:path*
+        destination: https://leetcode-clone-backend.onrender.com/api/:path*
+      # This rule ensures all other paths are handled by your React app
+      - type: rewrite
+        source: /*
+        destination: /index.html
