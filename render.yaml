@@ -26,8 +26,9 @@ services:
         value: 3.11.5
 
   # --- Frontend Service ---
-  - type: web
+  - type: web          # Use 'web' as the service type
     name: leetcode-clone-frontend
+    runtime: static    # Add this line to specify it's a static site
     rootDir: leetcode-clone-frontend
     buildCommand: "npm install && npm run build"
     publishDir: "dist"
