@@ -1,0 +1,24 @@
+databases:
+  - name: leetcode-clone-db
+    plan: free
+    databaseName: leetcode_clone_db
+    user: leetcode_clone_user
+
+services:
+  - type: web
+    name: leetcode-clone
+    plan: free
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn leetcode_clone.asgi:application -k uvicorn.workers.UvicornWorker"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: leetcode-clone-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
+      - key: PYTHON_VERSION
+        value: 3.11.4 # Or your specific Python version
