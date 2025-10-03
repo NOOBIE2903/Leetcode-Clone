@@ -24,7 +24,6 @@ services:
       - key: PYTHON_VERSION
         value: 3.11.4
 
-services:
   - type: static
     name: leetcode-clone-frontend
     rootDir: leetcode-clone-frontend
