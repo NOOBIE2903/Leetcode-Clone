@@ -25,7 +25,7 @@ services:
         value: 3.11.4
 
 
-  - type: static_site 
+  - type: static 
     name: leetcode-clone-frontend
     rootDir: leetcode-clone-frontend
     buildCommand: "npm install && npm run build"
