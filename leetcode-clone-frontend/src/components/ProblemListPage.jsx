@@ -109,7 +109,7 @@ function ProblemListPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-400 text-sm">
-                    {problem.tags.join(", ")}
+                    {Array.isArray(problem.tags) ? problem.tags.join(', ') : ''}
                   </td>
                 </tr>
               ))}
