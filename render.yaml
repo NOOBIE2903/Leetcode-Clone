@@ -31,7 +31,7 @@ services:
     runtime: static
     rootDir: leetcode-clone-frontend
     buildCommand: "npm install && npm run build"
-    publishDir: "dist"
+    staticPublishPath: "dist"
     routes:
       # FIX: Correct the source and destination paths
       - type: rewrite
