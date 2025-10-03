@@ -25,17 +25,19 @@ services:
       - key: PYTHON_VERSION
         value: 3.11.5
 
-  # --- Frontend Service ---
-  - type: web          # Use 'web' as the service type
+  # --- Frontend Service (Corrected) ---
+  - type: web
     name: leetcode-clone-frontend
-    runtime: static    # Add this line to specify it's a static site
+    runtime: static
     rootDir: leetcode-clone-frontend
     buildCommand: "npm install && npm run build"
     publishDir: "dist"
     routes:
+      # FIX: Correct the source and destination paths
       - type: rewrite
-        source: /api/:path*
-        destination: https://leetcode-clone-backend.onrender.com/api/:path*
+        source: /api/*
+        destination: https://leetcode-clone-backend.onrender.com/api/
+      # This rule must come last to act as a fallback
       - type: rewrite
         source: /*
         destination: /index.html
