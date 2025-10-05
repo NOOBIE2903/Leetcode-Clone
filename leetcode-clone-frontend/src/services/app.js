@@ -1,8 +1,11 @@
 import axios from 'axios';
 
+const baseURL = process.env.NODE_ENV === 'production'
+  ? '/api' // Use the relative path for production (works with Render's rewrite rule)
+  : 'http://127.0.0.1:8000/api'; // Use the absolute path for local development
+
 const apiClient = axios.create({
-  // FIX: Use a relative path for the API
-  baseURL: '/api/', 
+  baseURL: baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
