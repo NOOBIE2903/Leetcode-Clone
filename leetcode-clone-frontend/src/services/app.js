@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const apiClient = axios.create({
   // FIX: Use a relative path for the API
-  baseURL: '/api', 
+  baseURL: '/api/', 
   headers: {
     'Content-Type': 'application/json',
   },
