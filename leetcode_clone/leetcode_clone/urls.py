@@ -12,7 +12,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include([
         path('users/', include('users.urls')),
-        path('problems/', include('problems.urls')),
+        path('', include('problems.urls')),
         path('submissions/', include('submissions.urls')),
         path('contests/', include('contests.urls')),
         path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
