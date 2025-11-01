@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const baseURL = process.env.NODE_ENV === 'production'
-  ? '/api' // Use the relative path for production (works with Render's rewrite rule)
-  : 'http://127.0.0.1:8000/api'; // Use the absolute path for local development
+const baseURL = process.env.NODE_ENV === 'production' 
+  ? 'https://leetcode-clone-backend-xkde.onrender.com'
+  : 'http://127.0.0.1:8000/api';
 
 const apiClient = axios.create({
   baseURL: baseURL,

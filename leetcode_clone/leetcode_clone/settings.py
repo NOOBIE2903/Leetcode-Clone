@@ -153,6 +153,18 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 if not DEBUG:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
@@ -185,9 +197,17 @@ SIMPLE_JWT = {
     "LEEWAY": timedelta(seconds=30), 
 }
 
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = False 
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", 
     "https://leetcode-clone-frontend.onrender.com", 
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://leetcode-clone-frontend.onrender.com",
+    "https://leetcode-clone-backend-xkde.onrender.com",
 ]
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
