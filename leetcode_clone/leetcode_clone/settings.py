@@ -27,23 +27,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-DEBUG = False
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 SECRET_KEY = os.environ.get('SECRET_KEY', '').strip('"').strip("'")  # Remove quotes if present
 
 if not SECRET_KEY:
     if DEBUG:
         SECRET_KEY = 'django-insecure-dev-key-only-12345'
-        print("⚠️  Using development SECRET_KEY")
+        # print("⚠️  Using development SECRET_KEY")
     else:
         raise ValueError("SECRET_KEY environment variable must be set in production!")
 
-print(f"✅ SECRET_KEY loaded successfully (length: {len(SECRET_KEY)})")
+# print(f"✅ SECRET_KEY loaded successfully (length: {len(SECRET_KEY)})")
 
-print("=== Environment Variables ===")
-for key in ['SECRET_KEY', 'DEBUG', 'DATABASE_URL']:
-    value = os.environ.get(key)
-    print(f"{key}: {value} (length: {len(value) if value else 0})")
-print("=============================")
+# print("=== Environment Variables ===")
+# for key in ['SECRET_KEY', 'DEBUG', 'DATABASE_URL']:
+#     value = os.environ.get(key)
+#     print(f"{key}: {value} (length: {len(value) if value else 0})")
+# print("=============================")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
@@ -222,6 +222,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173", 
     "https://leetcode-clone-frontend.onrender.com",
     "https://leetcode-clone-backend-xkde.onrender.com",
 ]
